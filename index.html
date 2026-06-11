@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guia da Copa do Mundo 2026 🏆</title>
+<title>Guia da Copa do Mundo 2026 - TIBS 🏆</title>
 <style>
   :root{
     --bg:#0a1410; --bg2:#0f1f18; --card:#13261d; --card2:#16301f;
@@ -62,7 +62,8 @@
   .m-time .h{font-size:18px;font-weight:800}
   .m-time .d{font-size:11px;color:var(--muted)}
   .m-live{font-size:10px;font-weight:800;color:#fff;background:var(--live);padding:2px 6px;border-radius:6px;
-    display:inline-block;margin-top:4px;animation:pulse 1.4s infinite}
+    display:inline-block;margin-top:4px;animation:pulse 1.4s infinite;white-space:nowrap}
+  .m-live.half{background:var(--gold);color:#04140b;animation:none}
   .m-ft{font-size:10px;font-weight:700;color:var(--muted);margin-top:4px;display:inline-block}
   @keyframes pulse{50%{opacity:.45}}
   .teams{display:flex;flex-direction:column;gap:6px}
@@ -77,6 +78,23 @@
   .venue{font-size:11px;color:var(--muted);max-width:150px}
   .watch{font-size:12px;font-weight:700;color:#04140b;background:var(--gold);padding:5px 10px;border-radius:8px;white-space:nowrap}
   .watch:hover{filter:brightness(1.1)}
+
+  /* odds */
+  .odds{grid-column:1/-1;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+  .odds-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .odds-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;margin-right:2px}
+  .plus18{background:var(--live);color:#fff;border-radius:4px;padding:0 4px;font-size:9px;margin-left:2px}
+  .odd{display:flex;flex-direction:column;align-items:center;background:var(--bg2);border:1px solid var(--line);
+    border-radius:8px;padding:4px 11px;min-width:60px}
+  .odd b{font-size:10px;color:var(--muted);font-weight:600;margin-bottom:1px;white-space:nowrap}
+  .odd{font-size:15px;font-weight:800;color:var(--accent)}
+  .odds-houses{display:flex;gap:6px;flex-wrap:wrap}
+  .house{font-size:11px;font-weight:800;color:#fff;padding:6px 10px;border-radius:7px;white-space:nowrap;transition:.15s}
+  .house:hover{filter:brightness(1.12);transform:translateY(-1px)}
+  .house.betano{background:#ff5101}
+  .house.sportingbet{background:#0a7d34}
+  .house.b365{background:#027b5b}
 
   /* groups / standings */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;margin-top:14px}
@@ -128,8 +146,8 @@
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="badge-cup">🏆 FIFA World Cup</div>
-    <h1>Guia da Copa do Mundo 2026</h1>
+    <div class="badge-cup">🏆 FIFA World Cup · TIBS</div>
+    <h1>Guia da Copa do Mundo 2026 — TIBS</h1>
     <div class="sub">48 seleções · 104 jogos · 11 de junho a 19 de julho de 2026</div>
     <div class="hosts">🇺🇸 Estados Unidos &nbsp;·&nbsp; 🇨🇦 Canadá &nbsp;·&nbsp; 🇲🇽 México</div>
     <div class="status-line">
@@ -194,6 +212,8 @@
 
   <footer>
     Dados ao vivo via TheSportsDB · Horários no fuso de Brasília (UTC−3)<br>
+    <strong style="color:var(--muted)">As odds exibidas são ESTIMATIVAS</strong> calculadas pela força das seleções — não são as cotações reais das casas. Confira o valor verdadeiro no site da casa.<br>
+    🔞 Aposte com responsabilidade · Proibido para menores de 18 anos · Jogue com moderação<br>
     Guia não-oficial · feito para acompanhar a Copa 2026 ⚽
   </footer>
 </div>
@@ -252,6 +272,38 @@ const BROADCASTERS=[
  {n:"N Sports",type:"TV fechada",d:"Novo canal esportivo com cerca de 32 jogos da Copa.",u:"https://www.youtube.com/results?search_query=N+Sports+ao+vivo"}
 ];
 
+// força aproximada das seleções (base ranking FIFA) — usada só p/ ESTIMAR odds
+const STRENGTH={
+ "México":78,"África do Sul":70,"Coreia do Sul":76,"Rep. Tcheca":74,
+ "Canadá":74,"Bósnia":72,"Catar":70,"Suíça":81,
+ "Brasil":90,"Marrocos":83,"Haiti":60,"Escócia":74,
+ "Estados Unidos":79,"Paraguai":74,"Austrália":73,"Turquia":78,
+ "Alemanha":87,"Curaçao":61,"Costa do Marfim":76,"Equador":78,
+ "Holanda":87,"Japão":80,"Suécia":75,"Tunísia":72,
+ "Bélgica":85,"Egito":76,"Irã":75,"Nova Zelândia":64,
+ "Arábia Saudita":70,"Uruguai":84,"Espanha":90,"Cabo Verde":66,
+ "França":91,"Senegal":81,"Iraque":67,"Noruega":80,
+ "Argentina":92,"Argélia":76,"Áustria":79,"Jordânia":66,
+ "Portugal":88,"RD Congo":71,"Uzbequistão":69,"Colômbia":83,
+ "Inglaterra":89,"Croácia":83,"Gana":74,"Panamá":68
+};
+// casas de aposta (domínios regulados no Brasil)
+const HOUSES=[
+ {n:"Betano",u:"https://www.betano.bet.br/sport/futebol/"},
+ {n:"Sportingbet",u:"https://www.sportingbet.bet.br/"},
+ {n:"Bet365",u:"https://www.bet365.bet.br/"}
+];
+function strength(n){return STRENGTH[n]||70;}
+// odds ESTIMADAS (1 / X / 2) a partir da força das seleções + margem de casa
+function calcOdds(e){
+  const sh=strength(tname(e.strHomeTeam)), sa=strength(tname(e.strAwayTeam));
+  const eh=1/(1+Math.pow(10,((sa-sh)*22)/400));      // expectativa estilo Elo
+  let pD=0.28*(1-Math.abs(eh-0.5)*1.5); pD=Math.max(0.10,Math.min(0.30,pD)); // empate
+  const pH=eh*(1-pD), pA=(1-eh)*(1-pD), m=1.08;       // m = margem da casa (~8%)
+  const o=p=>Math.min(26,Math.max(1.02,Math.round((1/p/m)*100)/100)).toFixed(2);
+  return {h:o(pH),d:o(pD),a:o(pA)};
+}
+
 let ALL=[]; // todos os eventos
 
 const $=s=>document.querySelector(s);
@@ -269,7 +321,18 @@ function brTime(ts){
   return {h,day,date:dkey,ts:d};
 }
 function isBrazil(ev){return /Brazil/i.test(ev.strHomeTeam)||/Brazil/i.test(ev.strAwayTeam);}
-function isLive(ev){const s=(ev.strStatus||"").toUpperCase();return ["1H","2H","HT","LIVE","ET","P"].includes(s);}
+function isLive(ev){const s=(ev.strStatus||"").toUpperCase();return ["1H","2H","HT","LIVE","ET","P","BT"].includes(s);}
+// cronômetro do jogo calculado a partir do horário de início (UTC)
+function liveState(d){
+  if(!d||isNaN(d)) return {state:"none"};
+  const min=Math.floor((Date.now()-d.getTime())/60000);
+  if(min<0) return {state:"pre"};
+  if(min<=45)  return {state:"live",label:Math.max(1,min)+"'",phase:"1º tempo"};
+  if(min<=60)  return {state:"live",label:"Intervalo",phase:"intervalo",half:true};
+  if(min<=105) return {state:"live",label:Math.min(90,min-15)+"'",phase:"2º tempo"};
+  if(min<=126) return {state:"live",label:"90+'",phase:"acréscimos"};
+  return {state:"after"};
+}
 function isDone(ev){
   const s=(ev.strStatus||"").toUpperCase();
   return ["FT","MATCH FINISHED","AET","PEN","AWARDED"].includes(s)||(ev.intHomeScore!=null&&ev.intAwayScore!=null&&s!=="NS"&&!isLive(ev));
@@ -335,13 +398,36 @@ function renderMatches(){
   box.innerHTML=html;
 }
 function matchHTML(e,bt){
-  const live=isLive(e), done=isDone(e);
+  const done=isDone(e);
+  const ls=liveState(bt.ts);
+  const showLive = !done && (isLive(e) || ls.state==="live");
+  const isoTs = (bt.ts && !isNaN(bt.ts)) ? bt.ts.toISOString() : "";
   const hs=e.intHomeScore, as=e.intAwayScore, has=hs!=null&&as!=null;
   const hw=has&&+hs>+as, aw=has&&+as>+hs;
   const g=groupOf(e);
   const cazeUrl="https://www.youtube.com/@CazeTV/streams";
-  const status = live?`<span class="m-live">● AO VIVO</span>` : done?`<span class="m-ft">ENCERRADO</span>` : "";
+  let status="";
+  if(done) status=`<span class="m-ft">ENCERRADO</span>`;
+  else if(showLive){
+    const lbl = ls.state==="live" ? ls.label : "AO VIVO";
+    status=`<span class="m-live ${ls.half?'half':''}" data-ts="${isoTs}">${ls.half?'⏸ '+lbl:'● '+lbl}</span>`;
+  }
   const badge=t=>t?`<img src="${t}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">`:"";
+  let oddsHTML="";
+  const knownTeams = STRENGTH[tname(e.strHomeTeam)]!=null && STRENGTH[tname(e.strAwayTeam)]!=null;
+  if(!done && knownTeams){
+    const od=calcOdds(e);
+    const houses=HOUSES.map(h=>`<a class="house ${h.n.toLowerCase().replace('bet365','b365')}" href="${h.u}" target="_blank" rel="noopener">${h.n} ↗</a>`).join("");
+    oddsHTML=`<div class="odds">
+      <div class="odds-row">
+        <span class="odds-lbl">Odds estimadas <span class="plus18">+18</span></span>
+        <span class="odd"><b>${flag(tname(e.strHomeTeam))} Casa</b>${od.h}</span>
+        <span class="odd"><b>Empate</b>${od.d}</span>
+        <span class="odd"><b>Fora ${flag(tname(e.strAwayTeam))}</b>${od.a}</span>
+      </div>
+      <div class="odds-houses">${houses}</div>
+    </div>`;
+  }
   return `<div class="match ${isBrazil(e)?'br':''}">
     <div class="m-time">
       <div class="h">${bt.h}</div><div class="d">${(bt.day||'').split(',')[0]}</div>${status}
@@ -363,6 +449,7 @@ function matchHTML(e,bt){
       <span class="venue">📍 ${e.strVenue||''}${e.strCity?', '+e.strCity:''}</span>
       <a class="watch" href="${cazeUrl}" target="_blank" rel="noopener">📺 Assistir</a>
     </div>
+    ${oddsHTML}
   </div>`;
 }
 const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
@@ -447,10 +534,25 @@ document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
 $("#fSearch").addEventListener("input",renderMatches);
 $("#refreshBtn").onclick=load;
 
+// atualiza o cronômetro dos jogos ao vivo (sem refazer a busca)
+function tickClocks(){
+  document.querySelectorAll(".m-live[data-ts]").forEach(el=>{
+    const ts=el.getAttribute("data-ts"); if(!ts) return;
+    const ls=liveState(new Date(ts));
+    if(ls.state==="live"){
+      el.classList.toggle("half",!!ls.half);
+      el.textContent=(ls.half?"⏸ ":"● ")+ls.label;
+    }else if(ls.state==="after"){
+      el.classList.remove("m-live","half"); el.classList.add("m-ft");
+      el.removeAttribute("data-ts"); el.textContent="ENCERRADO";
+    }
+  });
+}
+
 renderBroadcasters();
 load();
-// auto-refresh a cada 60s
-setInterval(load,60000);
+setInterval(load,30000);     // placares + tabela em tempo real (a cada 30s)
+setInterval(tickClocks,1000); // relógio do jogo ao vivo (a cada 1s)
 </script>
 </body>
 </html>
