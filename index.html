@@ -221,6 +221,18 @@
 <script>
 const API="https://www.thesportsdb.com/api/v1/json/3";
 const LEAGUE=4429, SEASON=2026;
+// ESPN = fonte de PLACAR ao vivo / resultado / minuto (grátis, atualiza rápido)
+const ESPN="https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=20260611-20260719&limit=400";
+// normaliza nome de seleção p/ casar TheSportsDB x ESPN (acentos, grafias diferentes)
+function canon(n){
+  let s=(n||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z]/g,"");
+  const A={czechrepublic:"czechia",turkiye:"turkey",cotedivoire:"ivorycoast",
+    congodr:"drcongo",democraticrepublicofthecongo:"drcongo",
+    unitedstates:"usa",bosniaandherzegovina:"bosnia",bosniaherzegovina:"bosnia",
+    caboverde:"capeverde",iriran:"iran",republicofkorea:"southkorea",koreasouth:"southkorea",
+    korearepublic:"southkorea"};
+  return A[s]||s;
+}
 
 // EN -> PT-BR
 const PT={
@@ -339,6 +351,41 @@ function isDone(ev){
 }
 function groupOf(ev){return ev.strGroup&&/^[A-L]$/.test(ev.strGroup.trim())?ev.strGroup.trim():null;}
 
+// busca placares/minuto na ESPN e sobrepõe nos jogos do TheSportsDB
+let ESPN_OK=false;
+async function overlayEspn(){
+  try{
+    const r=await fetch(ESPN);
+    const j=await r.json();
+    if(!j.events) throw new Error("vazio");
+    const byTs={};
+    j.events.forEach(ev=>{
+      const c=ev.competitions&&ev.competitions[0]; if(!c) return;
+      const cs=c.competitors||[];
+      const H=cs.find(x=>x.homeAway==="home"), A=cs.find(x=>x.homeAway==="away");
+      if(!H||!A) return;
+      const st=(c.status&&c.status.type)||{};
+      const key=(ev.date||"").slice(0,16);  // "2026-06-11T19:00" (UTC)
+      (byTs[key]=byTs[key]||[]).push({
+        hc:canon(H.team.displayName||H.team.name), ac:canon(A.team.displayName||A.team.name),
+        hs:H.score, as:A.score, state:st.state, clock:(c.status&&c.status.displayClock)||""
+      });
+    });
+    ALL.forEach(e=>{
+      const key=(e.strTimestamp||"").replace(" ","T").slice(0,16);
+      const list=byTs[key]; if(!list) return;
+      const hc=canon(e.strHomeTeam), ac=canon(e.strAwayTeam);
+      let m=list.find(x=>x.hc===hc&&x.ac===ac), swap=false;
+      if(!m){ m=list.find(x=>x.hc===ac&&x.ac===hc); swap=!!m; }
+      if(!m) return;
+      const hs=swap?m.as:m.hs, as=swap?m.hs:m.as;
+      if(m.state==="post"){ e.intHomeScore=hs; e.intAwayScore=as; e.strStatus="FT"; e._clock=""; }
+      else if(m.state==="in"){ e.intHomeScore=hs; e.intAwayScore=as; e.strStatus="LIVE"; e._clock=m.clock||""; }
+    });
+    ESPN_OK=true;
+  }catch(err){ ESPN_OK=false; }
+}
+
 async function load(){
   setStatus("loading");
   try{
@@ -350,6 +397,7 @@ async function load(){
   }catch(e){
     setStatus("err");
   }
+  await overlayEspn();           // sobrepõe placar/minuto da ESPN
   buildFilters();
   renderMatches();
   renderGroups();
@@ -358,7 +406,7 @@ async function load(){
 function setStatus(s){
   const dot=$("#statusDot"),txt=$("#statusTxt");
   dot.className="dot "+(s==="ok"?"ok":s==="err"?"err":"");
-  txt.textContent = s==="ok" ? "Dados ao vivo conectados · "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})
+  txt.textContent = s==="ok" ? "Atualizado "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})+(ESPN_OK?" · placares ESPN":"")
     : s==="err" ? "Sem conexão com a API — mostrando estrutura de grupos" : "Carregando dados ao vivo…";
 }
 
@@ -409,8 +457,12 @@ function matchHTML(e,bt){
   let status="";
   if(done) status=`<span class="m-ft">ENCERRADO</span>`;
   else if(showLive){
-    const lbl = ls.state==="live" ? ls.label : "AO VIVO";
-    status=`<span class="m-live ${ls.half?'half':''}" data-ts="${isoTs}">${ls.half?'⏸ '+lbl:'● '+lbl}</span>`;
+    if(e._clock){ // minuto REAL vindo da ESPN (atualiza a cada refresh)
+      status=`<span class="m-live">● ${e._clock}</span>`;
+    }else{        // sem ESPN: cronômetro calculado pelo horário de início
+      const lbl = ls.state==="live" ? ls.label : "AO VIVO";
+      status=`<span class="m-live ${ls.half?'half':''}" data-ts="${isoTs}">${ls.half?'⏸ '+lbl:'● '+lbl}</span>`;
+    }
   }
   const badge=t=>t?`<img src="${t}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">`:"";
   let oddsHTML="";
