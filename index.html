@@ -397,10 +397,12 @@ async function overlayEspn(){
 async function load(){
   setStatus("loading");
   try{
-    const r=await fetch(`${API}/eventsseason.php?id=${LEAGUE}&s=${SEASON}`);
-    const j=await r.json();
-    if(!j.events||!j.events.length) throw new Error("vazio");
-    ALL=j.events.sort((a,b)=>(a.strTimestamp||"").localeCompare(b.strTimestamp||""));
+    const rounds=[1,2,3,4,5,6,7,8];
+    const lists=await Promise.all(rounds.map(rd=>fetch(`${API}/eventsround.php?id=${LEAGUE}&r=${rd}&s=${SEASON}`).then(x=>x.json()).then(j=>j.events||[]).catch(()=>[])));
+    const seen={}, all=[];
+    lists.flat().forEach(ev=>{ if(ev&&ev.idEvent&&!seen[ev.idEvent]){ seen[ev.idEvent]=1; all.push(ev); } });
+    if(!all.length) throw new Error("vazio");
+    ALL=all.sort((a,b)=>(a.strTimestamp||"").localeCompare(b.strTimestamp||""));
     setStatus("ok");
   }catch(e){
     setStatus("err");
