@@ -134,6 +134,55 @@
     margin:0 auto 14px;animation:rot 1s linear infinite}
   @keyframes rot{to{transform:rotate(360deg)}}
 
+  /* hero: ao vivo agora + contagem regressiva */
+  #hero{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0 0;justify-content:center}
+  .hero-card{flex:1;min-width:260px;max-width:520px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .hero-live{border-color:var(--live);box-shadow:0 0 0 1px var(--live) inset}
+  .hero-h{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+  .hero-live .hero-h{color:var(--live)}
+  .hero-cd .hero-h{color:var(--bryel)}
+  .blink{width:9px;height:9px;border-radius:50%;background:var(--live);animation:pulse 1.1s infinite}
+  .hl-game{display:flex;align-items:center;gap:8px;font-size:14px;padding:6px 0;border-top:1px solid var(--line)}
+  .hl-game:first-of-type{border-top:none}
+  .hl-game .min{margin-left:auto;font-size:11px;font-weight:800;color:var(--live)}
+  .hl-sc{font-weight:800;font-size:16px;color:var(--accent)}
+  .cd-match{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:16px;margin-bottom:8px}
+  .cd-clock{display:flex;gap:8px;justify-content:center}
+  .cd-box{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:6px 10px;min-width:54px;text-align:center}
+  .cd-box b{display:block;font-size:22px;font-weight:800;color:var(--bryel);line-height:1}
+  .cd-box span{font-size:9px;text-transform:uppercase;color:var(--muted);letter-spacing:1px}
+
+  /* detalhes do jogo: gols, cartões, posse */
+  .m-detail{grid-column:1/-1;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 16px}
+  .m-detail .gl{color:var(--txt)}
+  .m-detail .cardico{font-size:11px}
+  .poss-bar{flex-basis:100%;height:6px;border-radius:4px;background:var(--live);overflow:hidden;display:flex;margin-top:2px}
+  .poss-bar i{height:100%;background:var(--accent);display:block}
+
+  /* artilharia */
+  .scards{max-width:560px;margin:16px auto 0}
+  .srow{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:7px 0}
+  .srow .rk{font-weight:800;color:var(--muted);width:24px;text-align:center}
+  .srow .rk.top{color:var(--gold)}
+  .srow .nm{font-weight:700;font-size:15px}
+  .srow .tm{font-size:12px;color:var(--muted)}
+  .srow .goals{margin-left:auto;font-weight:800;color:var(--accent);font-size:17px}
+  .srow .goals small{color:var(--muted);font-weight:600;font-size:11px}
+
+  /* melhores 3os + foco brasil */
+  .section-h{font-size:16px;font-weight:800;color:var(--accent);margin:26px 0 10px}
+  .thirds{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:680px}
+  .thirds tbody tr.qual{background:rgba(21,212,114,.10)}
+  .thirds tbody tr.cut td{opacity:.55}
+  .cutline td{padding:0;border:none}
+  .cutline div{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--live);text-align:center;padding:3px;background:rgba(255,59,59,.12)}
+  .br-panel{background:linear-gradient(135deg,#0a2a14,var(--card));border:1px solid var(--br);border-radius:16px;padding:18px;margin-top:14px}
+  .br-panel h3{color:var(--bryel);font-size:17px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .br-stat{display:flex;gap:18px;flex-wrap:wrap;margin:12px 0}
+  .br-stat div{font-size:13px;color:var(--muted)}
+  .br-stat b{display:block;font-size:22px;color:var(--txt);font-weight:800}
+  .br-next{font-size:13px;color:var(--txt);background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:6px}
+
   footer{text-align:center;color:var(--muted);font-size:12px;margin-top:40px;padding-top:18px;border-top:1px solid var(--line)}
   .refresh{cursor:pointer;color:var(--accent);font-weight:600}
   @media(max-width:560px){
@@ -158,9 +207,12 @@
     </div>
   </header>
 
+  <div id="hero"></div>
+
   <nav class="tabs">
     <div class="tab active" data-tab="jogos">📅 Jogos</div>
     <div class="tab" data-tab="grupos">📊 Grupos & Tabela</div>
+    <div class="tab" data-tab="artilharia">⚽ Artilharia</div>
     <div class="tab" data-tab="mata">🔥 Mata-mata</div>
     <div class="tab" data-tab="assistir">📺 Onde Assistir</div>
   </nav>
@@ -190,10 +242,21 @@
       <p>A tabela é calculada automaticamente conforme os resultados saem (Vitória = 3 pts · Empate = 1 · Derrota = 0). As <strong style="color:var(--accent)">2 primeiras de cada grupo</strong> avançam, mais os <strong style="color:var(--accent)">8 melhores 3º colocados</strong>.</p>
     </div>
     <div class="grid" id="groupsGrid"><div class="loader"><div class="spin"></div>Montando tabelas…</div></div>
+    <div id="bestThirds"></div>
+  </section>
+
+  <!-- ARTILHARIA -->
+  <section class="panel" id="panel-artilharia">
+    <div class="info" style="margin-top:14px">
+      <h3>⚽ Artilharia</h3>
+      <p>Ranking de goleadores atualizado ao vivo conforme os gols saem (fonte: ESPN). Gols contra não contam para o artilheiro.</p>
+    </div>
+    <div id="scorersList"><div class="loader"><div class="spin"></div>Carregando gols…</div></div>
   </section>
 
   <!-- MATA-MATA -->
   <section class="panel" id="panel-mata">
+    <div id="brazilPath"></div>
     <div class="info" style="margin-top:14px">
       <h3>Fase eliminatória</h3>
       <p>Novidade de 2026: com 48 seleções, o mata-mata começa nos <strong>16-avos de final (32 times)</strong>, seguindo para oitavas, quartas, semifinais e a <strong>final em 19/07 no MetLife Stadium</strong> (Nova York/Nova Jersey). Os confrontos aparecem aqui assim que as chaves forem definidas.</p>
@@ -366,6 +429,7 @@ async function overlayEspn(){
     const r=await fetch(ESPN);
     const j=await r.json();
     if(!j.events) throw new Error("vazio");
+    const stat=cp=>{const o={};(cp.statistics||[]).forEach(s=>o[s.abbreviation]=s.displayValue);return {pp:o.PP||"", shot:o.SHOT||o.TC||"", sog:o.SOG||o.CG||""};};
     const byTs={};
     j.events.forEach(ev=>{
       const c=ev.competitions&&ev.competitions[0]; if(!c) return;
@@ -374,9 +438,15 @@ async function overlayEspn(){
       if(!H||!A) return;
       const st=(c.status&&c.status.type)||{};
       const key=(ev.date||"").slice(0,16);  // "2026-06-11T19:00" (UTC)
+      const details=(c.details||[]).map(d=>({
+        who:(d.athletesInvolved&&d.athletesInvolved[0]&&d.athletesInvolved[0].displayName)||"",
+        clock:(d.clock&&d.clock.displayValue)||"", teamId:d.team&&d.team.id,
+        goal:!!d.scoringPlay, red:!!d.redCard, og:!!d.ownGoal
+      }));
       (byTs[key]=byTs[key]||[]).push({
         hc:canon(H.team.displayName||H.team.name), ac:canon(A.team.displayName||A.team.name),
-        hs:H.score, as:A.score, state:st.state, clock:(c.status&&c.status.displayClock)||""
+        hs:H.score, as:A.score, state:st.state, clock:(c.status&&c.status.displayClock)||"",
+        hId:H.team.id, details, stH:stat(H), stA:stat(A)
       });
     });
     ALL.forEach(e=>{
@@ -389,6 +459,11 @@ async function overlayEspn(){
       const hs=swap?m.as:m.hs, as=swap?m.hs:m.as;
       if(m.state==="post"){ e.intHomeScore=hs; e.intAwayScore=as; e.strStatus="FT"; e._clock=""; }
       else if(m.state==="in"){ e.intHomeScore=hs; e.intAwayScore=as; e.strStatus="LIVE"; e._clock=m.clock||""; }
+      // gols/cartões com lado relativo ao mandante DO APP (considerando swap)
+      const sideOf=tid=>{const espnHome=(tid===m.hId); return espnHome?(swap?"away":"home"):(swap?"home":"away");};
+      e._goals=m.details.filter(d=>d.goal).map(d=>({who:d.who,clock:d.clock,og:d.og,side:sideOf(d.teamId)}));
+      e._cards=m.details.filter(d=>d.red).map(d=>({who:d.who,clock:d.clock,side:sideOf(d.teamId)}));
+      e._stats=swap?{home:m.stA,away:m.stH}:{home:m.stH,away:m.stA};
     });
     ESPN_OK=true;
   }catch(err){ ESPN_OK=false; }
@@ -397,8 +472,11 @@ async function overlayEspn(){
 async function load(){
   setStatus("loading");
   try{
+    // o endpoint da temporada (grátis) limita a 15 jogos — buscamos por RODADA p/ pegar todos os 104
     const rounds=[1,2,3,4,5,6,7,8];
-    const lists=await Promise.all(rounds.map(rd=>fetch(`${API}/eventsround.php?id=${LEAGUE}&r=${rd}&s=${SEASON}`).then(x=>x.json()).then(j=>j.events||[]).catch(()=>[])));
+    const lists=await Promise.all(rounds.map(rd=>
+      fetch(`${API}/eventsround.php?id=${LEAGUE}&r=${rd}&s=${SEASON}`).then(x=>x.json()).then(j=>j.events||[]).catch(()=>[])
+    ));
     const seen={}, all=[];
     lists.flat().forEach(ev=>{ if(ev&&ev.idEvent&&!seen[ev.idEvent]){ seen[ev.idEvent]=1; all.push(ev); } });
     if(!all.length) throw new Error("vazio");
@@ -411,7 +489,11 @@ async function load(){
   buildFilters();
   renderMatches();
   renderGroups();
+  renderBestThirds();
+  renderScorers();
   renderKnockout();
+  renderBrazil();
+  renderHero();
 }
 function setStatus(s){
   const dot=$("#statusDot"),txt=$("#statusTxt");
@@ -490,6 +572,23 @@ function matchHTML(e,bt){
       <div class="odds-houses">${houses}</div>
     </div>`;
   }
+  let detailHTML="";
+  if(done && (e._goals||e._cards||e._stats)){
+    const gline=side=>(e._goals||[]).filter(g=>g.side===side).map(g=>`${g.who||"Gol"}${g.og?" (contra)":""} ${g.clock}`).join(", ");
+    const cline=side=>(e._cards||[]).filter(c=>c.side===side).map(c=>`🟥 ${c.who||""} ${c.clock}`).join(", ");
+    const parts=[];
+    const hg=gline("home"), ag=gline("away");
+    if(hg) parts.push(`<span class="gl">⚽ ${flag(tname(e.strHomeTeam))} ${hg}</span>`);
+    if(ag) parts.push(`<span class="gl">⚽ ${flag(tname(e.strAwayTeam))} ${ag}</span>`);
+    const hc2=cline("home"), ac2=cline("away");
+    if(hc2) parts.push(`<span>${flag(tname(e.strHomeTeam))} ${hc2}</span>`);
+    if(ac2) parts.push(`<span>${flag(tname(e.strAwayTeam))} ${ac2}</span>`);
+    const S=e._stats||{home:{},away:{}};
+    if(S.home.shot||S.away.shot) parts.push(`<span>🎯 Chutes ${S.home.shot||0} – ${S.away.shot||0}</span>`);
+    let poss="";
+    if(S.home.pp&&S.away.pp){ const ph=parseFloat(S.home.pp)||50; poss=`<span>Posse ${S.home.pp}% – ${S.away.pp}%</span><div class="poss-bar"><i style="width:${ph}%"></i></div>`; }
+    if(parts.length||poss) detailHTML=`<div class="m-detail">${parts.join("")}${poss}</div>`;
+  }
   return `<div class="match ${isBrazil(e)?'br':''}">
     <div class="m-time">
       <div class="h">${bt.h}</div><div class="d">${(bt.day||'').split(',')[0]}</div>${status}
@@ -511,21 +610,18 @@ function matchHTML(e,bt){
       <span class="venue">📍 ${e.strVenue||''}${e.strCity?', '+e.strCity:''}</span>
       <a class="watch" href="${cazeUrl}" target="_blank" rel="noopener">📺 Assistir</a>
     </div>
-    ${oddsHTML}
+    ${oddsHTML}${detailHTML}
   </div>`;
 }
 const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
 
 /* ---------- GRUPOS / TABELA ---------- */
-function renderGroups(){
-  const grid=$("#groupsGrid");
-  // inicializa tabelas com base nos grupos conhecidos
+function computeStandings(){
   const tables={};
   Object.keys(GROUPS).forEach(k=>{
     tables[k]={};
-    GROUPS[k].forEach(t=>tables[k][t]={t,P:0,W:0,D:0,L:0,GF:0,GA:0,Pts:0});
+    GROUPS[k].forEach(t=>tables[k][t]={t,grp:k,P:0,W:0,D:0,L:0,GF:0,GA:0,Pts:0});
   });
-  // processa resultados
   ALL.forEach(e=>{
     const g=groupOf(e); if(!g||!tables[g]) return;
     if(!isDone(e)) return;
@@ -538,6 +634,12 @@ function renderGroups(){
     else if(as>hs){A.W++;H.L++;A.Pts+=3;}
     else{H.D++;A.D++;H.Pts++;A.Pts++;}
   });
+  return tables;
+}
+const cmpRow=(a,b)=>b.Pts-a.Pts || (b.GF-b.GA)-(a.GF-a.GA) || b.GF-a.GF || a.t.localeCompare(b.t);
+function renderGroups(){
+  const grid=$("#groupsGrid");
+  const tables=computeStandings();
   let html="";
   Object.keys(GROUPS).forEach(k=>{
     const rows=Object.values(tables[k]).sort((a,b)=>
@@ -571,6 +673,106 @@ function renderKnockout(){
     html+=matchHTML(e,bt);
   });
   box.innerHTML=html;
+}
+
+/* ---------- HERO: ao vivo agora + contagem regressiva ---------- */
+function renderHero(){
+  const box=$("#hero"); if(!box) return;
+  let html="";
+  const live=ALL.filter(e=>!isDone(e)&&(isLive(e)||(e._clock&&e._clock!=="")));
+  if(live.length){
+    let g="";
+    live.slice(0,4).forEach(e=>{
+      const hs=e.intHomeScore!=null?e.intHomeScore:"-", as=e.intAwayScore!=null?e.intAwayScore:"-";
+      g+=`<div class="hl-game">${flag(tname(e.strHomeTeam))} ${tname(e.strHomeTeam)} <span class="hl-sc">${hs}–${as}</span> ${tname(e.strAwayTeam)} ${flag(tname(e.strAwayTeam))}<span class="min">● ${e._clock||"AO VIVO"}</span></div>`;
+    });
+    html+=`<div class="hero-card hero-live"><div class="hero-h"><span class="blink"></span> Ao vivo agora</div>${g}</div>`;
+  }
+  const now=Date.now();
+  const nbr=ALL.filter(e=>isBrazil(e)&&!isDone(e)&&brTime(e.strTimestamp).ts&&brTime(e.strTimestamp).ts.getTime()>now-2*3600*1000)
+    .sort((a,b)=>(a.strTimestamp||"").localeCompare(b.strTimestamp||""))[0];
+  if(nbr){
+    const bt=brTime(nbr.strTimestamp);
+    html+=`<div class="hero-card hero-cd"><div class="hero-h">🇧🇷 Próximo jogo do Brasil</div>
+      <div class="cd-match">${flag(tname(nbr.strHomeTeam))} ${tname(nbr.strHomeTeam)} <span style="color:var(--muted)">x</span> ${tname(nbr.strAwayTeam)} ${flag(tname(nbr.strAwayTeam))}</div>
+      <div class="cd-clock" data-countdown="${bt.ts.toISOString()}"></div>
+      <div style="text-align:center;font-size:12px;color:var(--muted);margin-top:6px">${cap(bt.day)} · ${bt.h} (Brasília)</div></div>`;
+  }
+  box.innerHTML=html;
+  updateCountdowns();
+}
+function updateCountdowns(){
+  document.querySelectorAll(".cd-clock[data-countdown]").forEach(el=>{
+    const t=new Date(el.getAttribute("data-countdown")).getTime();
+    let s=Math.floor((t-Date.now())/1000);
+    if(s<0){ el.innerHTML='<div class="cd-box"><b>•</b><span>ao vivo / em breve</span></div>'; return; }
+    const d=Math.floor(s/86400); s-=d*86400; const h=Math.floor(s/3600); s-=h*3600; const m=Math.floor(s/60); s-=m*60;
+    const bx=(v,l)=>`<div class="cd-box"><b>${String(v).padStart(2,"0")}</b><span>${l}</span></div>`;
+    el.innerHTML=bx(d,"dias")+bx(h,"h")+bx(m,"min")+bx(s,"seg");
+  });
+}
+
+/* ---------- ARTILHARIA ---------- */
+function renderScorers(){
+  const box=$("#scorersList"); if(!box) return;
+  const tally={};
+  ALL.forEach(e=>{
+    if(!e._goals) return;
+    e._goals.forEach(g=>{
+      if(g.og||!g.who) return;
+      const team=g.side==="home"?tname(e.strHomeTeam):tname(e.strAwayTeam);
+      const key=g.who+"|"+team;
+      (tally[key]=tally[key]||{who:g.who,team,goals:0}).goals++;
+    });
+  });
+  const list=Object.values(tally).sort((a,b)=>b.goals-a.goals||a.who.localeCompare(b.who)).slice(0,30);
+  if(!list.length){ box.innerHTML='<div class="empty">Ainda não há gols registrados. Volte quando a bola rolar! ⚽</div>'; return; }
+  box.innerHTML='<div class="scards">'+list.map((p,i)=>`
+    <div class="srow"><div class="rk ${i<3?'top':''}">${i+1}</div>
+      <div><div class="nm">${p.who}</div><div class="tm">${flag(p.team)} ${p.team}</div></div>
+      <div class="goals">${p.goals}<small> gol${p.goals>1?'s':''}</small></div></div>`).join("")+'</div>';
+}
+
+/* ---------- MELHORES 3º COLOCADOS ---------- */
+function renderBestThirds(){
+  const box=$("#bestThirds"); if(!box) return;
+  const tables=computeStandings();
+  const thirds=[];
+  Object.keys(GROUPS).forEach(k=>{ const rows=Object.values(tables[k]).sort(cmpRow); if(rows[2]) thirds.push(rows[2]); });
+  const played=thirds.some(t=>t.P>0);
+  thirds.sort(cmpRow);
+  let rowsHtml="";
+  thirds.forEach((r,i)=>{
+    const sg=r.GF-r.GA;
+    if(i===8) rowsHtml+='<tr class="cutline"><td colspan="9"><div>⬇ abaixo da linha de classificação</div></td></tr>';
+    rowsHtml+=`<tr class="${i<8?'qual':'cut'}"><td class="pos">${i+1}</td><td class="flag" style="font-size:17px">${flag(r.t)}</td>
+      <td class="team" style="display:table-cell">${r.t} <small style="color:var(--muted)">(${r.grp})</small></td>
+      <td>${r.P}</td><td>${r.W}</td><td>${r.D}</td><td>${r.L}</td><td>${sg>0?'+':''}${sg}</td><td class="pts">${r.Pts}</td></tr>`;
+  });
+  box.innerHTML=`<div class="section-h">🥉 Melhores 3º colocados</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Os <strong style="color:var(--accent)">8 melhores terceiros</strong> dos 12 grupos avançam aos 16-avos.${played?'':' Ainda sem jogos suficientes — vai preenchendo conforme a fase de grupos avança.'}</p>
+    <div class="thirds"><table><thead><tr><th></th><th></th><th>Time</th><th>P</th><th>V</th><th>E</th><th>D</th><th>SG</th><th>Pts</th></tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
+}
+
+/* ---------- FOCO BRASIL ---------- */
+function renderBrazil(){
+  const box=$("#brazilPath"); if(!box) return;
+  const tables=computeStandings();
+  const rows=Object.values(tables["C"]||{}).sort(cmpRow);
+  const pos=rows.findIndex(r=>r.t==="Brasil");
+  const br=rows[pos]||{P:0,W:0,D:0,L:0,GF:0,GA:0,Pts:0};
+  const next=ALL.filter(e=>isBrazil(e)&&!isDone(e)).sort((a,b)=>(a.strTimestamp||"").localeCompare(b.strTimestamp||""))[0];
+  let nextHtml="";
+  if(next){ const bt=brTime(next.strTimestamp); nextHtml=`<div class="br-next">⏭ Próximo: <strong>${tname(next.strHomeTeam)} x ${tname(next.strAwayTeam)}</strong> — ${cap(bt.day)} ${bt.h} · ${next.strVenue||""}</div>`; }
+  const posTxt=pos>=0?`${pos+1}º no Grupo C`:"Grupo C";
+  const status=pos>=0&&pos<2?"🟢 Zona de classificação":(br.P>=3?"🔴 Fora da zona (por enquanto)":"Em disputa");
+  box.innerHTML=`<div class="br-panel"><h3>🇧🇷 Foco Seleção Brasileira</h3>
+    <div style="font-size:13px;color:var(--muted)">${posTxt} · ${status}</div>
+    <div class="br-stat">
+      <div><b>${br.Pts}</b>pontos</div><div><b>${br.P}</b>jogos</div>
+      <div><b>${br.W}-${br.D}-${br.L}</b>V-E-D</div><div><b>${br.GF}:${br.GA}</b>gols</div>
+    </div>${nextHtml}
+    <div style="font-size:12px;color:var(--muted);margin-top:8px">O chaveamento e o caminho do Brasil até a final aparecem aqui quando a fase de grupos terminar.</div></div>`;
 }
 
 /* ---------- ASSISTIR ---------- */
@@ -609,6 +811,7 @@ function tickClocks(){
       el.removeAttribute("data-ts"); el.textContent="ENCERRADO";
     }
   });
+  updateCountdowns();
 }
 
 renderBroadcasters();
