@@ -349,7 +349,15 @@ function isDone(ev){
   const s=(ev.strStatus||"").toUpperCase();
   return ["FT","MATCH FINISHED","AET","PEN","AWARDED"].includes(s)||(ev.intHomeScore!=null&&ev.intAwayScore!=null&&s!=="NS"&&!isLive(ev));
 }
-function groupOf(ev){return ev.strGroup&&/^[A-L]$/.test(ev.strGroup.trim())?ev.strGroup.trim():null;}
+// mapa reverso: nome da seleção (PT) -> letra do grupo
+const TEAM_GROUP={};
+Object.keys(GROUPS).forEach(k=>GROUPS[k].forEach(t=>TEAM_GROUP[t]=k));
+function groupOf(ev){
+  if(ev.strGroup&&/^[A-L]$/.test(ev.strGroup.trim())) return ev.strGroup.trim();
+  // fallback: o endpoint da temporada não traz o grupo — derivamos pelo time
+  const hg=TEAM_GROUP[tname(ev.strHomeTeam)], ag=TEAM_GROUP[tname(ev.strAwayTeam)];
+  return (hg&&hg===ag)?hg:null; // só é jogo de grupo se ambos no mesmo grupo (senão é mata-mata)
+}
 
 // busca placares/minuto na ESPN e sobrepõe nos jogos do TheSportsDB
 let ESPN_OK=false;
